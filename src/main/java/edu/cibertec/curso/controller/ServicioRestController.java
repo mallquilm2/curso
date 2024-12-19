@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,13 +45,20 @@ public class ServicioRestController {
     
     @GetMapping("/cursos")
     public List<CursoEntity> listarTodos(){
-        return cursoService.listarTodos();
+        List<CursoEntity> rpta = cursoService.listarTodos();
+        for (CursoEntity cursoEntity : rpta) {
+            //cursoEntity.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ServicioRestController.class).listarTodos()).withSelfRel());
+            cursoEntity.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ServicioRestController.class).obtenerUno(cursoEntity.getIdCurso())).withSelfRel());
+        }
+        return rpta;
     }
     
     @GetMapping("/cursos/{id}")
     public CursoEntity obtenerUno(@PathVariable("id") int codigo){
         try {
-            return cursoService.obtenerUno(codigo);
+            CursoEntity rpta=cursoService.obtenerUno(codigo);
+            rpta.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ServicioRestController.class).obtenerUno(codigo)).withSelfRel());
+            return rpta;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Curso no localizado",e);
         }

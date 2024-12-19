@@ -12,6 +12,7 @@ import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="curso")
 @NamedQuery(name = "CursoEntity.abiertoIncompleto", query="SELECT c FROM CursoEntity c WHERE c.alumnosMin > c.alumnosAct AND c.estado = 1")
-public class CursoEntity {
+public class CursoEntity extends RepresentationModel<CursoEntity>{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
