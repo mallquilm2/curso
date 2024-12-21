@@ -7,7 +7,9 @@ import edu.cibertec.curso.util.MyCustomError;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@Slf4j
 public class ServicioRestController {
+    
+    @Value("${server.port}")
+    private String puertoUsado;
     
     @Autowired
     CursoService cursoService;
@@ -55,6 +61,7 @@ public class ServicioRestController {
     
     @GetMapping("/cursos/{id}")
     public CursoEntity obtenerUno(@PathVariable("id") int codigo){
+        log.info("Instancia donde se ejecuta "+puertoUsado);
         try {
             CursoEntity rpta=cursoService.obtenerUno(codigo);
             rpta.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ServicioRestController.class).obtenerUno(codigo)).withSelfRel());
